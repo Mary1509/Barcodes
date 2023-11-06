@@ -23,9 +23,9 @@ def encode(data):
 def display_barcode(data, enc_str):
     '''Display generated encoded string in form of png file'''
     color = cycle(['white', 'black'])
-    w, h = 500, 200
+    w, h = 700, 200
     win = Tk()
-    win.geometry('700x400')
+    win.geometry('800x400')
     canvas = Canvas(win, width=w, height=h, background='white')
     canvas.pack()
     start_pos = {
@@ -64,10 +64,10 @@ if __name__ == '__main__':
     logging.info('Starting tool')
     logging.info('Getting the user input')
     data = input('Enter data string:')
-    while not data.isnumeric():
-        logging.error(f'Got alphabetic values. Data: {data}')
+    while not data.isnumeric() or len(data) > 10:
+        logging.error(f'Got alphabetic values or string length over 10 chars. Data: {data}')
         logging.info('Getting the user input')
-        print('Data must contain only numeric values')
+        print('Data must contain only numeric values and contain less than 10 characters.')
         data = input('Enter data string:')
     logging.info(f'Entered data: {data}')
     try:
