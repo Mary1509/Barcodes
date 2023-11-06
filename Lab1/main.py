@@ -14,7 +14,6 @@ logging.basicConfig(filename=f'encoder_{date}.log',
 
 
 def encode(data_arr):
-    """Encode data string"""
     try:
         return Encoder.encode(data_arr)
     except Exception as err:
