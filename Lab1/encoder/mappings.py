@@ -1,3 +1,4 @@
+"""Module providing mappings for 3/5 Matrix Code."""
 mapping_table = {
     0: 'NNWWN',
     1: 'WNNNW',
@@ -11,5 +12,5 @@ mapping_table = {
     9: 'NWNWN'
 }
 
-start = 'WNNNN'
-stop = 'WNNNN'
+START = 'WNNNN'
+STOP = 'WNNNN'
