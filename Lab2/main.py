@@ -4,7 +4,7 @@ import datetime
 from io import BytesIO
 
 from barcode import Code128
-from barcode.writer import SVGWriter
+from barcode.writer import ImageWriter
 
 date = datetime.datetime.now().date()
 
@@ -19,8 +19,8 @@ if __name__ == '__main__':
     data = input('Enter data string:')
     logging.info('Entered data: %s', data)
     try:
-        with open('result.svg', 'wb') as f:
-            Code128(data, writer=SVGWriter()).write(f)
+        result_image = Code128(data, writer=ImageWriter())
+        result_image.save('result', options={"module_width": 0.4, "module_height": 20})
     except Exception as e:
         logging.error('Error encoding data: %s', e)
         print(f'Error encoding: {e}')
