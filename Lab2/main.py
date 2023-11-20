@@ -41,20 +41,19 @@ def scan_barcode_from_image():
             print('Selection cancelled')
             return
     except BarcodeError as err:
-        logging.error('Error decoding data: %s', e)
-        print(f'Error decoding: {e}')
-
+        logging.error('Error decoding data: %s', err)
+        print(f'Error decoding: {err}')
 
 
 def scan_barcode_from_camera():
     logging.info('Selected image scan option')
     print("Webcam turned on. To finish press 'q'")
     video_capture = cv2.VideoCapture(0)
-    video_capture.set(3.640)
-    video_capture.set(4.480)
+    video_capture.set(3, 640)
+    video_capture.set(4, 480)
 
-    while True:
-        _, frame = video_capture.read()
+    while video_capture.isOpened():
+        ret, frame = video_capture.read()
         barcodes = pyzbar.decode(frame)
 
         for barcode in barcodes:
@@ -63,7 +62,10 @@ def scan_barcode_from_camera():
             print("Barcode Data:", barcode_data)
             logging.info("Barcode Data: %s Type: %s", barcode_data, barcode_type)
 
-        if cv2.waitKey(1) & 0xFF == ord("q"):
+        # Display the resulting frame
+        cv2.imshow('frame', frame)
+        key = cv2.waitKey(1)
+        if key & 0xFF == ord('q'):
             break
 
     video_capture.release()
@@ -83,6 +85,10 @@ def encode():
         print(f'Error encoding: {e}')
 
 
+def exit_run():
+    logging.info('Exitings')
+    exit(0)
+
 if __name__ == '__main__':
     logging.info('Starting tool')
     logging.info('Getting the user input')
@@ -95,10 +101,12 @@ if __name__ == '__main__':
         3 - Scan barcode from camera
         4 - Quit\n"""
         opt = input(prompt)
-
-        match int(opt):
-            case 1: encode()
-            case 2: scan_barcode_from_image()
-            case 3: scan_barcode_from_camera()
-            case 4: logging.info('Exitings') and exit(0)
-            case _: print('No such option')
+        if opt.isnumeric():
+            match int(opt):
+                case 1: encode()
+                case 2: scan_barcode_from_image()
+                case 3: scan_barcode_from_camera()
+                case 4: exit_run()
+                case _: print('No such option')
+        else:
+            print('No such option')
