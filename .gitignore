@@ -2,3 +2,5 @@
 *.log
 __pycache__
 .venv
+config.*
+*.png
