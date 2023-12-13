@@ -2,6 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
 from models.base import Base
+from models.drug import drug_store_association
 
 
 class Store(Base):
@@ -18,6 +19,8 @@ class Store(Base):
     address = relationship("Address", back_populates='stores')
     chain_id = Column(Integer, ForeignKey('chains.uid', onupdate='CASCADE', ondelete='CASCADE'))
     chain = relationship("Chain", back_populates='stores')
+
+    drugs = relationship('Drug', secondary=drug_store_association, back_populates='stores')
 
     def __init__(self, uid, name):
         self.uid = uid

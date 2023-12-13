@@ -4,6 +4,15 @@ from sqlalchemy.orm import relationship
 from models.base import Base
 
 
+drug_store_association = Table(
+    'stock', Base.metadata,
+    Column('drug_id', Integer, ForeignKey('drugs.uid')),
+    Column('store_id', Integer, ForeignKey('drugstores.uid')),
+    Column('quantity', DOUBLE_PRECISION),
+    Column('price', DOUBLE_PRECISION)
+)
+
+
 class Drug(Base):
     """drugs"""
     __tablename__ = 'drugs'
@@ -24,9 +33,18 @@ class Drug(Base):
     trademark_id = Column(Integer, ForeignKey('trademarks.uid', onupdate='CASCADE'))
     mark = relationship("Mark", back_populates='drugs')
 
-    def __init__(self, uid, name):
+    stores = relationship('Store', secondary=drug_store_association, back_populates='drugs')
+
+    def __init__(self, uid, name, barcode, exp_date, serial_no, prescription, type_id, main_subs_id, trademark_id):
         self.uid = uid
         self.name = name
+        self.barcode = barcode
+        self.exp_date = exp_date
+        self.serial_no = serial_no
+        self.prescription = prescription
+        self.type_id = type_id
+        self.main_subs_id = main_subs_id
+        self.trademark_id = trademark_id
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

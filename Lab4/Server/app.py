@@ -1,5 +1,6 @@
 from flask import Flask
 from models import base, drug, type, subst, mark, store, city, chain, user, address
+from routes.drugs import blueprint as drugs_blueprint
 
 db = base.db
 
@@ -12,6 +13,8 @@ def create_app():
 
 
 app = create_app()
+
+app.register_blueprint(drugs_blueprint,  url_prefix='/drugs')
 
 
 @app.route("/")
