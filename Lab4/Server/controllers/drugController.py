@@ -18,15 +18,31 @@ def index():
 
 def drugs():
     res = []
-    drugs = db.session.query(Drug, Type, Substance, Mark).join(Type).join(Substance).join(Mark).all()
-    if not drugs:
-        return make_response(jsonify("Error"))
-    i = 0
-    for drug_res in drugs:
-        print(drug_res[0].as_dict())
-        i += 1
-    print(i)
-    return make_response(200)
+    try:
+        drugs = db.session.query(Drug, Type, Substance, Mark).join(Type).join(Substance).join(Mark).all()
+        if not drugs:
+            return make_response(jsonify("Error querying drugs"), 404)
+
+        for drug_res in drugs:
+            drug_dict = drug_res[0].as_dict()
+            type_dict = drug_res[1].as_dict()
+            subst_dict = drug_res[2].as_dict()
+            mark_dict = drug_res[3].as_dict()
+
+            drug_dict.pop('type_id')
+            drug_dict['type'] = type_dict['name']
+
+            drug_dict.pop('main_subs_id')
+            drug_dict['subst'] = subst_dict['name']
+
+            drug_dict.pop('trademark_id')
+            drug_dict['mark'] = mark_dict['name']
+
+            res.append(drug_dict)
+        return make_response(jsonify(res), 200)
+    except SQLAlchemyError as e:
+        return make_response(jsonify('Error querying drugs'), 500)
+
 
 
     # res = []
@@ -158,17 +174,20 @@ def addDrug():
                 type_id=type.uid,
                 main_subs_id=subst.uid,
                 trademark_id=mark.uid)
+    drug.mark = mark
+    drug.subs = subst
+    drug.type = type
 
     # generate barcode
 
     try:
-        db.session.add(Drug)
+        db.session.add(drug)
         db.session.commit()
         BarcodeService.generate(code)
         return send_file('result.png')
-    except SQLAlchemyError as err:
+    except Exception as err:
         print(err)
-        return make_response(jsonify({'message': 'Error syncing with db', 'error': f'{err}'}), 503)
+        return make_response(jsonify({'message': 'Error generating', 'error': f'{err}'}), 503)
 
 
 # def delDrug(id):
@@ -193,12 +212,24 @@ def readBarcode():
     else:
         try:
             drug = (db.session.query(Drug, Type, Substance, Mark).
-                    join(Type).join(Substance).join(Mark).filter(Drug.barcode == barcode))
+                    join(Type).join(Substance).join(Mark).filter(Drug.barcode == barcode)).first()
             if drug is None:
                 return make_response(jsonify({'message': 'No barcode found in database'}), 404)
             else:
-                drug_res = []
-                return make_response(jsonify(drug_res), 200)
+                drug_dict = drug[0].as_dict()
+                type_dict = drug[1].as_dict()
+                subst_dict = drug[2].as_dict()
+                mark_dict = drug[3].as_dict()
+
+                drug_dict.pop('type_id')
+                drug_dict['type'] = type_dict['name']
+
+                drug_dict.pop('main_subs_id')
+                drug_dict['subst'] = subst_dict['name']
+
+                drug_dict.pop('trademark_id')
+                drug_dict['mark'] = mark_dict['name']
+                return make_response(jsonify(drug_dict), 200)
         except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
             return make_response(jsonify(error), e.code)

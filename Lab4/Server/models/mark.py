@@ -15,8 +15,7 @@ class Mark(Base):
     name = Column(Text, nullable=False)
     drugs = relationship("Drug", back_populates='mark')
 
-    def __init__(self, uid, name):
-        self.uid = uid
+    def __init__(self, name):
         self.name = name
 
     def as_dict(self):

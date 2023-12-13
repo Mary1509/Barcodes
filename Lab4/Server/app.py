@@ -1,8 +1,16 @@
 from flask import Flask
 from models import base, drug, type, subst, mark, store, city, chain, user, address
 from routes.drugs import blueprint as drugs_blueprint
+import logging
+import datetime
 
 db = base.db
+
+date = datetime.datetime.now().date()
+
+logging.basicConfig(filename=f'encoder_{date}.log',
+                    encoding='utf-8',
+                    level=logging.DEBUG)
 
 
 def create_app():

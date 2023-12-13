@@ -35,8 +35,7 @@ class Drug(Base):
 
     stores = relationship('Store', secondary=drug_store_association, back_populates='drugs')
 
-    def __init__(self, uid, name, barcode, exp_date, serial_no, prescription, type_id, main_subs_id, trademark_id):
-        self.uid = uid
+    def __init__(self, name, barcode, exp_date, serial_no, prescription, type_id, main_subs_id, trademark_id):
         self.name = name
         self.barcode = barcode
         self.exp_date = exp_date
