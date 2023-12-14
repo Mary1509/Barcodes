@@ -3,8 +3,7 @@
 from barcode import Code128
 from barcode.writer import ImageWriter
 from barcode.errors import BarcodeError
-import tkinter as tk
-from tkinter import filedialog
+
 import cv2
 from pyzbar import pyzbar
 
@@ -18,9 +17,6 @@ class BarcodeService:
 
     @staticmethod
     def scan(img_path):
-
-        root = tk.Tk()
-        root.withdraw()
 
         try:
             if img_path is not None:
