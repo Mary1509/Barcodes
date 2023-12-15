@@ -208,6 +208,7 @@ def readBarcode():
     barcode_file.save('barcode_file.png')
     barcode = BarcodeService.scan('barcode_file.png')
     if barcode is None:
+        print("No barcode")
         return make_response(jsonify({'message': 'No barcode found in image'}), 400)
     else:
         try:
@@ -229,9 +230,9 @@ def readBarcode():
 
                 drug_dict.pop('trademark_id')
                 drug_dict['mark'] = mark_dict['name']
+                print(drug_dict)
                 return make_response(jsonify(drug_dict), 200)
         except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
             return make_response(jsonify(error), e.code)
 
-    pass

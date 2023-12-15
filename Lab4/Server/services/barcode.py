@@ -32,6 +32,7 @@ class BarcodeService:
                 return
         except BarcodeError as err:
             print(f'Error decoding: {err}')
+            return None
 
     @staticmethod
     def generate(code):

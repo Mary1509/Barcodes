@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from models import base, drug, type, subst, mark, store, city, chain, user, address
 from routes.drugs import blueprint as drugs_blueprint
 import logging
@@ -21,6 +22,8 @@ def create_app():
 
 
 app = create_app()
+
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 app.register_blueprint(drugs_blueprint,  url_prefix='/drugs')
 
