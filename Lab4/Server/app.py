@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from models import base, drug, type, subst, mark, store, city, chain, user, address
+from models import base
 from routes.drugs import blueprint as drugs_blueprint
 import logging
 import datetime
@@ -26,15 +26,4 @@ app = create_app()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 app.register_blueprint(drugs_blueprint,  url_prefix='/drugs')
-
-
-@app.route("/")
-def hello_world():
-    drugs = db.session.query(drug.Drug).all()
-    drugstores = db.session.query(store.Store).filter(store.Store.chain == None)
-    users =  db.session.query(user.User).all()
-    res = []
-    for user_res in users:
-        res.append(user_res.as_dict())
-    return res
 

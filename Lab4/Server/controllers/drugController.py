@@ -9,6 +9,9 @@ from models.address import Address
 from models.type import Type
 from models.subst import Substance
 from models.mark import Mark
+from models.chain import Chain
+from models.city import City
+from models.user import User
 from services.barcode import BarcodeService
 
 
@@ -184,7 +187,7 @@ def addDrug():
         db.session.add(drug)
         db.session.commit()
         BarcodeService.generate(code)
-        return send_file('result.png')
+        return send_file('result.png', mimetype='image/png')
     except Exception as err:
         print(err)
         return make_response(jsonify({'message': 'Error generating', 'error': f'{err}'}), 503)
